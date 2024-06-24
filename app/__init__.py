@@ -16,9 +16,6 @@ aiosession = ClientSession()
 def LOGGER(name: str) -> logging.Logger:
     return logging.getLogger(name)
 
-def gas():
-    execvp(executable, [executable, "-m", "ubot"])
-
 
 class ConnectionHandler(logging.Handler):
     def emit(self, record):

@@ -1,4 +1,4 @@
-from app import ubot, OWNER_ID
+from app import OWNER_ID
 
 async def get_users_(client, user_id):
     try:

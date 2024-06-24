@@ -1,6 +1,6 @@
 import ast
 from pyrogram import filters
-from app import ubot, bot, OWNER_ID
+from app import bot, OWNER_ID
 from pyrogram.raw.functions import Ping
 from datetime import datetime
 from app.database import udb

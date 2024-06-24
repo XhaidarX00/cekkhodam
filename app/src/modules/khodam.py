@@ -297,6 +297,11 @@ async def handle_callback_query(client: Client, callback_query: CallbackQuery):
             return await callback_query.message.reply("🙈 Kamu belum Open War Gimana mau ditutup?")
         else:
             openWar.remove(user_id)
+            if user_id not in tambahPowerKhodam:
+                pass
+            else:
+                del tambahPowerKhodam[user_id]
+                
             await callback_query.message.reply("🙈 War telah ditutup")
 
 

@@ -1,5 +1,5 @@
 aiohttp>=3.9.3
-ntgcalls>=1.2.0
+# ntgcalls>=1.2.0
 pyrogram>=1.2.20
 motor==3.0.0
 TgCrypto

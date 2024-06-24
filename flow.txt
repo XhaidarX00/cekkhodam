@@ -1,0 +1,13 @@
+ALUR CEK KHODAM
+1. set db buat tiap akun (bisa ganti khodam via upgrade) begin point 50
+2. open / close war (+ point if win, and - point if lose)
+    -if open db in open war
+    -if close db delete
+    -else kosong
+    
+    - nama khodam { mention }
+    - strange, health, armor
+    
+    upgrade just can be in close war
+    
+3. Ranking Khodam

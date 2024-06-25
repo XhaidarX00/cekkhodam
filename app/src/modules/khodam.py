@@ -27,10 +27,11 @@ with open(path, "r") as file:
 # Fungsi untuk membuat tombol keyboard
 def make_keyboard():
     keyboard = [
-        [InlineKeyboardButton("Show Arena", callback_data="show_arena")],
-        [InlineKeyboardButton("Cek Khodam", callback_data="cek_khodam"), InlineKeyboardButton("Ganti Khodam", callback_data="ganti_khodam")],
-        [InlineKeyboardButton("Buat Jurus", callback_data="buat_jurus"), InlineKeyboardButton("Ganti Jurus", callback_data="ganti_jurus")],
-        [InlineKeyboardButton("Open War", callback_data="open_war"), InlineKeyboardButton("Tutup War", callback_data="tutup_war")]
+        [InlineKeyboardButton("🔥 Show Arena 🔥", callback_data="show_arena")],
+        [InlineKeyboardButton("👾 Cek Khodam 👾", callback_data="cek_khodam")],
+        [InlineKeyboardButton("👹 Ganti Jurus", callback_data="ganti_jurus"), InlineKeyboardButton("Ganti Khodam 👹", callback_data="ganti_khodam")],
+        # [InlineKeyboardButton("Buat Jurus", callback_data="buat_jurus"), InlineKeyboardButton("Ganti Jurus", callback_data="ganti_jurus")],
+        [InlineKeyboardButton("⚔️ Open War", callback_data="open_war"), InlineKeyboardButton("Tutup War ⚔️", callback_data="tutup_war")]
     ]
     return InlineKeyboardMarkup(keyboard)
 
@@ -165,7 +166,7 @@ async def war(client: Client, message:Message):
 # Fungsi untuk mengirimkan pesan dengan tombol keyboard
 @app.on_message(filters.command("start"))
 async def start(client, message: Message):
-    await message.reply("👾 Selamat datang di bot cek khodam! 👾", reply_markup=make_keyboard())
+    await message.reply("👾 Selamat datang di bot cek khodam!", reply_markup=make_keyboard())
 
 @app.on_callback_query()
 async def handle_callback_query(client: Client, callback_query: CallbackQuery):
@@ -187,13 +188,17 @@ async def handle_callback_query(client: Client, callback_query: CallbackQuery):
     jurus = "Sledingan"
     
     if callback_query.data == "cek_khodam":
-        if f"user:{user_id}:khodam" in r:  
+        if f"user:{user_id}:khodam" in r: 
+            if "jurus" not in dataPengguna:
+                jurus = random.choice(data_jurus)
+                dataPengguna["jurus"] = jurus
+                r.set(f"user:{user_id}", str(dataPengguna))
+            else:
+                jurus = dataPengguna["jurus"]
+                
             mention = await mention_html(name, user_id)
             await callback_query.message.reply(f"😈 Khodam : **{dataPengguna['khodam']}**\n├ Jurus: {dataPengguna['jurus']}an\n╰ Pemilik : {mention}")
-            # ttl = r.ttl(f"user:{user_id}:khodam")
-            # hours, remainder = divmod(ttl, 3600)
-            # minutes, _ = divmod(remainder, 60)
-            # await callback_query.message.reply(f"Belum bisa cek khodam lagi, sisa waktu {hours} Jam {minutes} Menit")
+        
         else:
             nama_khodam = random.choice(khodam_list)
             dataPengguna["khodam"] = nama_khodam
@@ -219,12 +224,14 @@ async def handle_callback_query(client: Client, callback_query: CallbackQuery):
             r.setex(f"user:{user_id}:khodam", 86400, nama_khodam)
             await callback_query.message.reply(f"😈 Khodam kamu telah diganti menjadi {nama_khodam}")
 
-    elif callback_query.data == "buat_jurus":
-        if "jurus" in dataPengguna:
-            jurus = random.choice(data_jurus)
-            dataPengguna["jurus"] = jurus
-            r.set(f"user:{user_id}", str(dataPengguna))
-        await callback_query.message.reply(f"👹 Jurus yang kamu buat adalah {jurus}an")
+    # elif callback_query.data == "buat_jurus":
+    #     if "jurus" not in dataPengguna:
+    #         jurus = random.choice(data_jurus)
+    #         dataPengguna["jurus"] = jurus
+    #         r.set(f"user:{user_id}", str(dataPengguna))
+        
+    #     jurus = dataPengguna["jurus"]
+    #     await callback_query.message.reply(f"👹 Jurus yang kamu buat adalah {jurus}an")
 
     elif callback_query.data == "ganti_jurus":
         if "jurus" not in dataPengguna:

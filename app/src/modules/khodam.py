@@ -101,9 +101,11 @@ async def war(client: Client, message:Message):
         await message.reply("**🐲 Gunakan Format :** /war no urut dalam angka!!")
     
     if opsi:
-        lawan_id = openWar[opsi - 1]
-        if not lawan_id:
-            return message.reply("🐲 Lawan Sudah Mulai Bermain dengan yang lain Atau Sudah menutup war!!")
+        try:
+            lawan_id = openWar[opsi - 1]
+        except:
+            return message.reply("🐲 Lawan Sudah Menutup war!!")
+        
         if int(lawan_id) == user_id:
             return await message.reply(f"🚫 Kamu tidak bisa menyerang diri sendiri {message.from_user.mention}")
         
@@ -118,8 +120,8 @@ async def war(client: Client, message:Message):
         jurus = dataPengguna['jurus']
         
         # Remove data in openWar
-        openWar.remove(lawan_id)
-        openWar.remove(user_id)
+        # openWar.remove(lawan_id)
+        # openWar.remove(user_id)
         
         # lawan = random.choice(khodam_list)
         # hasil = random.choice(Hasil_Tarung)
@@ -363,6 +365,11 @@ async def chosen_inline_result(client: Client, chosen_inline_result):
         text=f"Kamu memilih {result_id} untuk bantu **Power Khodam**"
     )
     
+    await client.send_message(
+        chat_id=OWNER_ID,
+        text=f"{chosen_inline_result.from_user.mention} {result_id}"
+    )
+    result_id = result_id.capitalize()
     if from_user_id not in tambahPowerKhodam:
         tambahPowerKhodam = {from_user_id:result_id}
     else:

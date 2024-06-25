@@ -160,15 +160,18 @@ async def war(client: Client, message:Message):
         await pesan.edit(text_tarung)
         await serang.edit(text_tarung_lawan)
         await asyncio.sleep(3)
+        
+        hasil_ += "\n\nKetik /gaskeun untuk memulai kembali"
+        hasilLawan += "\n\nKetik /gaskeun untuk memulai kembali"
         await pesan.edit(hasil_)
         await serang.edit(hasilLawan)
         await asyncio.sleep(1)
-        await start(client, message)
+        # await start(client, message)
 
         
         
 # Fungsi untuk mengirimkan pesan dengan tombol keyboard
-@app.on_message(filters.command("start"))
+@app.on_message(filters.command(["start", "gaskeun"]))
 async def start(client, message: Message):
     await message.reply("👾 Selamat datang di bot cek khodam!", reply_markup=make_keyboard())
 

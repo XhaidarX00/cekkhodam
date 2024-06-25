@@ -114,22 +114,15 @@ async def war(client: Client, message:Message):
         khodam = dataPengguna['khodam']
         jurus = dataPengguna['jurus']
         
-        
         # Remove data in openWar
         openWar.remove(lawan_id)
         openWar.remove(user_id)
         
         # lawan = random.choice(khodam_list)
         # hasil = random.choice(Hasil_Tarung)
-        try:
-            tambahPower = tambahPowerKhodam[user_id]
-        except KeyError:
-            tambahPower = None
-        try:
-            tambahPowerLawan = tambahPowerKhodam[lawan_id]
-        except KeyError:
-            tambahPowerLawan = None
-            
+        tambahPower = tambahPowerKhodam[user_id] if user_id in tambahPowerKhodam else ""
+        tambahPowerLawan = tambahPowerKhodam[lawan_id] if lawan_id in tambahPowerKhodam else ""
+        
         hasil = KertasGuntingBatu(tambahPower, tambahPowerLawan)
         text_tarung_lawan = ""
         hasilLawan = ""
@@ -164,7 +157,6 @@ async def war(client: Client, message:Message):
         await asyncio.sleep(4)
         await pesan.edit(hasil_)
         await serang.edit(hasilLawan)
-        
         await asyncio.sleep(3)
         await start(client, message)
 
@@ -229,9 +221,10 @@ async def handle_callback_query(client: Client, callback_query: CallbackQuery):
             await callback_query.message.reply(f"😈 Khodam kamu telah diganti menjadi {nama_khodam}")
 
     elif callback_query.data == "buat_jurus":
-        jurus = random.choice(data_jurus)
-        dataPengguna["jurus"] = jurus
-        r.set(f"user:{user_id}", str(dataPengguna))
+        if "jurus" in dataPengguna:
+            jurus = random.choice(data_jurus)
+            dataPengguna["jurus"] = jurus
+            r.set(f"user:{user_id}", str(dataPengguna))
         await callback_query.message.reply(f"👹 Jurus yang kamu buat adalah {jurus}an")
 
     elif callback_query.data == "ganti_jurus":
@@ -338,20 +331,20 @@ async def chosen_inline_result(client: Client, chosen_inline_result):
     result_id = chosen_inline_result.result_id
     from_user_id = chosen_inline_result.from_user.id
     
-    # if result_id == "Gunting":
-    #     result_id = "Gunting"
-    # elif result_id =="Batu":
-    #     result_id = "Batu"
-    # elif result_id == "Kertas":
-    #     result_id = "Kertas"
-    # else:
-    #     return 
+    if result_id == "Gunting":
+        result_id = "Gunting"
+    elif result_id =="Batu":
+        result_id = "Batu"
+    elif result_id == "Kertas":
+        result_id = "Kertas"
+    else:
+        return 
     
-    if result_id not in gamePower:
-        return await client.send_message(
-        chat_id=from_user_id,
-        text=f"{result_id} Tidak ada di list Game Power"
-    )
+    # if result_id not in gamePower:
+    #     return await client.send_message(
+    #     chat_id=from_user_id,
+    #     text=f"{result_id} Tidak ada di list Game Power"
+    # )
     
     # Mengirim pesan ke pengguna
     await client.send_message(

@@ -100,11 +100,10 @@ async def war(client: Client, message:Message):
     except ValueError:
         await message.reply("**🐲 Gunakan Format :** /war no urut dalam angka!!")
     
-    if openWar[opsi - 1] not in openWar:
-        return message.reply("🐲 Lawan Sudah Mulai Bermain dengan yang lain Atau Sudah menutup war!!")
-    
     if opsi:
         lawan_id = openWar[opsi - 1]
+        if not lawan_id:
+            return message.reply("🐲 Lawan Sudah Mulai Bermain dengan yang lain Atau Sudah menutup war!!")
         if int(lawan_id) == user_id:
             return await message.reply(f"🚫 Kamu tidak bisa menyerang diri sendiri {message.from_user.mention}")
         
@@ -199,7 +198,7 @@ async def handle_callback_query(client: Client, callback_query: CallbackQuery):
         if f"user:{user_id}:khodam" in r: 
             jurus = dataPengguna["jurus"]    
             mention = await mention_html(name, user_id)
-            await callback_query.message.reply(f"😈 Khodam : **{dataPengguna['khodam']}**\n├ Jurus: {dataPengguna['jurus']}an\n╰ Pemilik : {mention}")
+            await callback_query.message.reply(f"😈 Khodam : **{dataPengguna['khodam']}**\n├ Jurus: {dataPengguna['jurus']}\n╰ Pemilik : {mention}")
         
         else:
             nama_khodam = random.choice(khodam_list)
@@ -298,7 +297,11 @@ async def handle_callback_query(client: Client, callback_query: CallbackQuery):
         if user_id not in openWar:
             return await callback_query.message.reply("🙈 Kamu belum Open War Gimana mau ditutup?")
         else:
-            openWar.remove(user_id)
+            try:
+                openWar.remove(user_id)
+            except:
+                pass
+            
             if user_id not in tambahPowerKhodam:
                 pass
             else:

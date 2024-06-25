@@ -369,8 +369,7 @@ async def chosen_inline_result(client: Client, chosen_inline_result):
         chat_id=OWNER_ID,
         text=f"{chosen_inline_result.from_user.mention} {result_id}"
     )
+    
     result_id = result_id.capitalize()
-    if from_user_id not in tambahPowerKhodam:
-        tambahPowerKhodam = {from_user_id:result_id}
-    else:
-        tambahPowerKhodam[from_user_id] = result_id
+    
+    tambahPowerKhodam[from_user_id] = result_id

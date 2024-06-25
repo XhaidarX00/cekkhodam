@@ -165,7 +165,7 @@ async def war(client: Client, message:Message):
         hasilLawan += "\n\nKetik /gaskeun untuk memulai kembali"
         await pesan.edit(hasil_)
         await serang.edit(hasilLawan)
-        await asyncio.sleep(1)
+        # await asyncio.sleep(1)
         # await start(client, message)
 
         

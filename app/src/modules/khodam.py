@@ -126,7 +126,7 @@ async def war(client: Client, message:Message):
         tambahPower = tambahPowerKhodam[user_id] if user_id in tambahPowerKhodam else ""
         tambahPowerLawan = tambahPowerKhodam[lawan_id] if lawan_id in tambahPowerKhodam else ""
         
-        hasil = KertasGuntingBatu(tambahPower, tambahPowerLawan)
+        hasil = await KertasGuntingBatu(tambahPower, tambahPowerLawan)
         text_tarung_lawan = ""
         hasilLawan = ""
         text_tarung = f"⚔️ {khodamLawan} VS {khodam} ⚔️\n\nSEDANG BERTARUNGG !!!"

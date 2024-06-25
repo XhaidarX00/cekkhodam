@@ -187,10 +187,7 @@ async def handle_callback_query(client: Client, callback_query: CallbackQuery):
     jurus = "Sledingan"
     
     if callback_query.data == "cek_khodam":
-        if f"user:{user_id}:khodam" in r:
-            if "jurus" not in dataPengguna:
-                return await callback_query.message.reply("🙈 Kamu belum membuat jurus, tekan tombol buat jurus untuk memulai")
-                
+        if f"user:{user_id}:khodam" in r:  
             mention = await mention_html(name, user_id)
             await callback_query.message.reply(f"😈 Khodam : **{dataPengguna['khodam']}**\n├ Jurus: {dataPengguna['jurus']}an\n╰ Pemilik : {mention}")
             # ttl = r.ttl(f"user:{user_id}:khodam")

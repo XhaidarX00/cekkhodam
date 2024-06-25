@@ -55,7 +55,10 @@ async def getDataPengguna(user_id):
 
 
 # akumulasi kertas gunting batu
-def KertasGuntingBatu(power, powerLawan):
+async def KertasGuntingBatu(power, powerLawan):
+    await bot.send_message(OWNER_ID, f"Power {power}\n PowerLawan {powerLawan}")
+    power = power.capitalize()
+    powerLawan = powerLawan.capitalize()
     if not power:
         return "Kalah"
     
@@ -337,20 +340,20 @@ async def chosen_inline_result(client: Client, chosen_inline_result):
     result_id = chosen_inline_result.result_id
     from_user_id = chosen_inline_result.from_user.id
     
-    if result_id == "Gunting":
-        result_id = "Gunting"
-    elif result_id =="Batu":
-        result_id = "Batu"
-    elif result_id == "Kertas":
-        result_id = "Kertas"
-    else:
-        return 
+    # if result_id == "Gunting":
+    #     result_id = "Gunting"
+    # elif result_id =="Batu":
+    #     result_id = "Batu"
+    # elif result_id == "Kertas":
+    #     result_id = "Kertas"
+    # else:
+    #     return 
     
-    # if result_id not in gamePower:
-    #     return await client.send_message(
-    #     chat_id=from_user_id,
-    #     text=f"{result_id} Tidak ada di list Game Power"
-    # )
+    if result_id not in gamePower:
+        return await client.send_message(
+        chat_id=from_user_id,
+        text=f"{result_id} Tidak ada di list Game Power"
+    )
     
     # Mengirim pesan ke pengguna
     await client.send_message(

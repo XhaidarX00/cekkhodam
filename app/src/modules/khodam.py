@@ -183,7 +183,9 @@ async def handle_callback_query(client: Client, callback_query: CallbackQuery):
         dataPengguna = {}
     else:
         dataPengguna = eval(dataPengguna)
-
+    
+    jurus = "Sledingan"
+    
     if callback_query.data == "cek_khodam":
         if f"user:{user_id}:khodam" in r:
             if "jurus" not in dataPengguna:

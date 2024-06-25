@@ -56,7 +56,7 @@ async def getDataPengguna(user_id):
 
 # akumulasi kertas gunting batu
 async def KertasGuntingBatu(power, powerLawan):
-    await bot.send_message(OWNER_ID, f"Power {power}\n PowerLawan {powerLawan}")
+    # await bot.send_message(OWNER_ID, f"Power {power}\n PowerLawan {powerLawan}")
     power = power.capitalize()
     powerLawan = powerLawan.capitalize()
     if not power:
@@ -159,10 +159,10 @@ async def war(client: Client, message:Message):
         
         await pesan.edit(text_tarung)
         await serang.edit(text_tarung_lawan)
-        await asyncio.sleep(4)
+        await asyncio.sleep(3)
         await pesan.edit(hasil_)
         await serang.edit(hasilLawan)
-        await asyncio.sleep(3)
+        await asyncio.sleep(1)
         await start(client, message)
 
         

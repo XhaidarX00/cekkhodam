@@ -12,6 +12,7 @@ r = REDISURL
 
 data_jurus = ["Tendang", "Pukul", "Sundul", "Sleding", "Sikut", "Jenggut", "Tamparan", "Tonjokan", "Sekap", "Tindih", "Jambak", "Sindiran"]
 Hasil_Tarung = ["Menang", "Kalah", "Seri"]
+gamePower = ["Gunting", "Batu", "Kertas"]
 openWar = []
 tambahPowerKhodam = {}
 
@@ -311,56 +312,46 @@ async def inline_query(client: Client, inline_query: InlineQuery):
     global openWar
     user_id = inline_query.from_user.id
     if user_id not in openWar:
-        await client.send_message(user_id, "🙈 Kamu belum Open War, Klik Open War untuk Memulai!!")
+        return await client.send_message(user_id, "🙈 Kamu belum Open War, Klik Open War untuk Memulai!!")
+    else:
+        emojis = [
+            ("Gunting", "✌️"),  # Peace hand sign
+            ("Batu", "✊"),  # Raised fist
+            ("Kertas", "✋")   # Raised hand
+        ]
+
         results = [
             InlineQueryResultArticle(
-                id="openwar",
-                title="Open War",
-                input_message_content=InputTextMessageContent(message_text="⚔️ Kamu sudah Open War klik show arena untuk mulai perang ⚔️!!"),
-                description="openwar"
-            )
+                id=i,
+                title=i,
+                input_message_content=InputTextMessageContent(message_text=emoji)
+            ) for i, emoji in emojis
         ]
-        
-        if user_id in openWar:
-            pass
-        else:
-            openWar.append(user_id)
-            
+
         await client.answer_inline_query(inline_query.id, results)
-        return
-    
-    emojis = [
-        ("Gunting", "✌️"),  # Peace hand sign
-        ("Batu", "✊"),  # Raised fist
-        ("Kertas", "✋")   # Raised hand
-    ]
-
-    results = [
-        InlineQueryResultArticle(
-            id=i,
-            title=i,
-            input_message_content=InputTextMessageContent(message_text=emoji)
-        ) for i, emoji in emojis
-    ]
-
-    await client.answer_inline_query(inline_query.id, results)
 
 # Handler untuk chosen inline result
 @app.on_chosen_inline_result()
 async def chosen_inline_result(client: Client, chosen_inline_result):
-    global tambahPowerKhodam
+    global tambahPowerKhodam, gamePower
     # Mendapatkan informasi tentang hasil yang dipilih
     result_id = chosen_inline_result.result_id
     from_user_id = chosen_inline_result.from_user.id
     
-    if result_id == "Gunting":
-        result_id = "Gunting"
-    elif result_id =="Batu":
-        result_id = "Batu"
-    elif result_id == "Kertas":
-        result_id = "Kertas"
-    else:
-        return 
+    # if result_id == "Gunting":
+    #     result_id = "Gunting"
+    # elif result_id =="Batu":
+    #     result_id = "Batu"
+    # elif result_id == "Kertas":
+    #     result_id = "Kertas"
+    # else:
+    #     return 
+    
+    if result_id not in gamePower:
+        return await client.send_message(
+        chat_id=from_user_id,
+        text=f"{result_id} Tidak ada di list Game Power"
+    )
     
     # Mengirim pesan ke pengguna
     await client.send_message(

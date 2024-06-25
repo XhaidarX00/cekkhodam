@@ -191,14 +191,13 @@ async def handle_callback_query(client: Client, callback_query: CallbackQuery):
     jurus = "Sledingan"
     
     if callback_query.data == "cek_khodam":
+        if "jurus" not in dataPengguna:
+            jurus = random.choice(data_jurus)
+            dataPengguna["jurus"] = jurus
+            r.set(f"user:{user_id}", str(dataPengguna))
+            
         if f"user:{user_id}:khodam" in r: 
-            if "jurus" not in dataPengguna:
-                jurus = random.choice(data_jurus)
-                dataPengguna["jurus"] = jurus
-                r.set(f"user:{user_id}", str(dataPengguna))
-            else:
-                jurus = dataPengguna["jurus"]
-                
+            jurus = dataPengguna["jurus"]    
             mention = await mention_html(name, user_id)
             await callback_query.message.reply(f"😈 Khodam : **{dataPengguna['khodam']}**\n├ Jurus: {dataPengguna['jurus']}an\n╰ Pemilik : {mention}")
         

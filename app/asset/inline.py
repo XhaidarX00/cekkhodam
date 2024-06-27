@@ -1,13 +1,15 @@
 # from pyrogram import Client, filters
-# from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, InlineQueryResultCachedSticker, InlineQueryResultArticle, InputTextMessageContent
+# from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, InlineQueryResultCachedSticker, InputTextMessageContent
 
 # # Inisialisasi bot dengan API ID dan API HASH dari my.telegram.org dan bot token dari BotFather
-# app = Client("khodam_bot",
-#     api_id = 17250424,
-#     api_hash = "753bc98074d420ef57ddf7eb1513162b",
-#     bot_token = "7150366217:AAGqdvHMtx-HtttFHL7MqRiN5C5c_kIajX0"
+# app = Client("unobot",
+#     api_id=17250424,
+#     api_hash="753bc98074d420ef57ddf7eb1513162b",
+#     bot_token="7217731238:AAESZA-y-JgN1PwhGdxEewj3kH3bUOG6HHU"
 # )
 
+# # Daftar ID pengguna yang diizinkan
+# ALLOWED_USER_IDS = [2099942562]  # Ganti dengan ID pengguna yang diizinkan
 
 # # Handler untuk perintah /start
 # @app.on_message(filters.command("start"))
@@ -19,36 +21,47 @@
 
 # # Handler untuk inline queries
 # @app.on_inline_query()
-# async def inline_query(client, inline_query):
+# async def inline_query(client: Client, inline_query):
+#     user_id = inline_query.from_user.id
+
+#     if user_id not in ALLOWED_USER_IDS:
+#         await client.answer_inline_query(
+#             inline_query.id,
+#             results=[],
+#             switch_pm_text="Anda tidak diizinkan menggunakan fitur ini.",
+#             switch_pm_parameter="start"
+#         )
+#         return
+
 #     # Daftar stiker yang tersedia untuk dipilih
-#     # stickers = [
-#     #     "CAACAgQAAxkBAANpZnlWNbMrqxKO1vwv_szZuF-HA88AAtMUAAKlYZlR8qxUgG8bX48eBA",  # Gantikan dengan file_id stiker yang valid
-#     #     "CAACAgQAAxkBAANrZnlWOL1HPIB3t9nscQfghuvKvEIAAjIQAAL1TphRh9vOCyGO3HoeBA",
-#     #     "CAACAgQAAxkBAANtZnlWOqOblN_oC9dEC09y0GijjYsAAmEQAAK55JlRpqlx4Y1hAcQeBA",
-#     #     "CAACAgQAAxkBAANvZnlWPCi2VJK7zirWK3gjT8YMN8IAAvkMAAIG2ZhRpbVJZ7JQzVEeBA",
-#     # ]
-
-#     # results = [
-#     #     InlineQueryResultCachedSticker(
-#     #         id=str(i),
-#     #         sticker_file_id=sticker
-#     #     ) for i, sticker in enumerate(stickers)
-#     # ]
+#     stickers = [
+#         "CAACAgQAAxkBAANpZnlWNbMrqxKO1vwv_szZuF-HA88AAtMUAAKlYZlR8qxUgG8bX48eBA",  # Gantikan dengan file_id stiker yang valid
+#         "CAACAgQAAxkBAANrZnlWOL1HPIB3t9nscQfghuvKvEIAAjIQAAL1TphRh9vOCyGO3HoeBA",
+#         # "CAACAgQAAxkBAANtZnlWOqOblN_oC9dEC09y0GijjYsAAmEQAAK55JlRpqlx4Y1hAcQeBA",
+#         # "CAACAgQAAxkBAANvZnlWPCi2VJK7zirWK3gjT8YMN8IAAvkMAAIG2ZhRpbVJZ7JQzVEeBA",
+#     ]
     
-#     emojis = [
-#         ("Gunting", "✌️"),  # Peace hand sign
-#         ("Batu", "✊"),  # Raised fist
-#         ("Kertas", "✋")   # Raised hand
+#     notPLayable = [
+#         "CAADBAADsBMAAuGdkFHTZ-jl4eNn-gI",
+#         "CAADBAADVA4AAhpfkFEKt19qveGSPgI",
+#         "CAADBAADrw0AAoWsmVHguULNoYJwUwI",
 #     ]
-
+    
 #     results = [
-#         InlineQueryResultArticle(
-#             id=i,
-#             title=i,
-#             input_message_content=InputTextMessageContent(message_text=emoji)
-#         ) for i, emoji in emojis
+#         InlineQueryResultCachedSticker(
+#             id=str(i),
+#             sticker_file_id=sticker
+#         ) for i, sticker in enumerate(stickers)
 #     ]
-
+    
+#     results += [
+#         InlineQueryResultCachedSticker(
+#             id=str(i+len(stickers)),
+#             sticker_file_id=sticker,
+#             input_message_content=InputTextMessageContent("Masuk")
+#         ) for i, sticker in enumerate(notPLayable)
+#     ]
+    
 #     await client.answer_inline_query(inline_query.id, results)
 
 # # Handler untuk chosen inline result
@@ -57,30 +70,19 @@
 #     # Mendapatkan informasi tentang hasil yang dipilih
 #     result_id = chosen_inline_result.result_id
 #     from_user_id = chosen_inline_result.from_user.id
-    
-#     if result_id == "Gunting":
-#         result_id = "Gunting"
-#     elif result_id =="Batu":
-#         result_id = "Batu"
-#     else:
-#         result_id = "Kertas"
-    
+
 #     # Mengirim pesan ke pengguna
 #     await client.send_message(
 #         chat_id=from_user_id,
-#         text=f"Anda telah memilih {result_id} untuk bantu **Power Khodam**"
+#         text=f"Anda telah memilih stiker dengan ID: {result_id} untuk bantu **Power Khodam**"
 #     )
 
-
-
+# # Handler untuk mendapatkan file_id stiker
 # @app.on_message(filters.sticker)
 # async def get_sticker_file_id(client, message):
 #     sticker = message.sticker
 #     file_id = sticker.file_id
 #     await message.reply(f"File ID stiker yang Anda kirim adalah:\n\n`{file_id}`")
-
-
-
 
 # # Menjalankan bot
 # app.run()

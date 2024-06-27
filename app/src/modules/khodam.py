@@ -209,7 +209,8 @@ async def handle_callback_query(client: Client, callback_query: CallbackQuery):
             nama_khodam = random.choice(khodam_list)
             dataPengguna["khodam"] = nama_khodam
             r.set(f"user:{user_id}", str(dataPengguna))
-            r.setex(f"user:{user_id}:khodam", 86400, nama_khodam)
+            # r.setex(f"user:{user_id}:khodam", 86400, nama_khodam)
+            r.setex(f"user:{user_id}:khodam", 300, nama_khodam)
             await callback_query.message.reply(f"😈 Khodam kamu adalah **{nama_khodam}**")
 
     elif callback_query.data == "ganti_khodam":

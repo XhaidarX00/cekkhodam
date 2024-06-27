@@ -16,12 +16,35 @@ gamePower = ["Gunting", "Batu", "Kertas"]
 openWar = []
 tambahPowerKhodam = {}
 
-path = "app/asset/khodam.json"
+path = "app/asset/data.json"
 
 # Membaca data Khodam dari file JSON
 with open(path, "r") as file:
     khodam_data = json.load(file)
     khodam_list = khodam_data["khodams"]
+    dare_list = khodam_data["dare"]
+    truth_list = khodam_data["truth"]
+    
+
+TruthOrDare = ["truth", "dare"]
+
+def truth_or_dare():
+    TD_ = random.choice(TruthOrDare)
+    dareortruth = ""
+    question = None
+    if TD_ == "dare":
+        dareortruth = "Dare"
+        question = random.choice(dare_list)
+    else:
+        dareortruth = "Truth"
+        question = random.choice(truth_list)
+        
+    text_ += f"{dareortruth} untuk kamu!!\n🤷 : {question}"
+    text__ = f"Lawan Kamu dapet {dareortruth}\n🤷 : {question}"
+    return text_, text__
+    
+    
+    
 
 
 # Fungsi untuk membuat tombol keyboard
@@ -138,18 +161,18 @@ async def war(client: Client, message:Message):
         if hasil == "Menang":
             text_tarung = f"😈 Wah Khodam mu Mengeluarkan {jurus}an Kematian!!"
             text_tarung_lawan = f"😭 Wah Khodam mu Melemah Terkena {jurus}an Kematian!!"
-            hasil_ = f"💪 Kamu {hasil} nih lawan {khodamLawan} dengan jurus {jurus}an adalan 🎉🎉!!"
-            hasilLawan = f"😭 Kamu Kalah nih karena di{jurus} sama {khodam}, Cepat Ganti Jurus dan coba lagi!!"
+            hasil_ = f"💪 Kamu {hasil} lawan {khodamLawan} dengan jurus {jurus}an adalan 🎉🎉!!"
+            hasilLawan = f"😭 Kamu Kalah karena di{jurus} sama {khodam}, Cepat Ganti Jurus dan coba lagi!!"
         elif hasil == "Kalah":
             text_tarung_lawan = f"😈 Wah Khodam mu Mengeluarkan {jurus}an Kematian!!"
             text_tarung = f"😭 Wah Khodam mu Melemah Terkena {jurusLawan}an Kematian!!"
-            hasil_ = f"😭 Kamu {hasil} nih karena di{jurusLawan} {khodam}, Cepat Ganti Jurus dan coba lagi!!"
-            hasilLawan = f"💪 Kamu Menang nih lawan {khodam} dengan jurus {jurus}an adalan 🎉🎉!!"
+            hasil_ = f"😭 Kamu {hasil} karena di{jurusLawan} {khodam}, Cepat Ganti Jurus dan coba lagi!!"
+            hasilLawan = f"💪 Kamu Menang lawan {khodam} dengan jurus {jurus}an adalan 🎉🎉!!"
         elif hasil == "Seri":
             text_tarung_lawan = f"😈 Wah Khodam mu Masih Bertahan!!"
             text_tarung = f"😈 Wah Khodam mu Masih Bertahan!!"
-            hasil_ = f"🐲 Wah {hasil} nih {khodam} dan {khodamLawan} sama-sama kuat 💪!!"
-            hasilLawan = f"🐲 Wah {hasil} nih {khodam} dan {khodamLawan} sama-sama kuat 💪!!"
+            hasil_ = f"🐲 Wah {hasil} {khodam} dan {khodamLawan} sama-sama kuat 💪!!"
+            hasilLawan = f"🐲 Wah {hasil} {khodam} dan {khodamLawan} sama-sama kuat 💪!!"
         else:
             text_error = "Terjadi Kesalahan Segera Lapor ke @kenapatagdar"
             await pesan.edit(text_error)
@@ -165,8 +188,10 @@ async def war(client: Client, message:Message):
         hasilLawan += "\n\nKetik /gaskeun untuk memulai kembali"
         await pesan.edit(hasil_)
         await serang.edit(hasilLawan)
-        # await asyncio.sleep(1)
-        # await start(client, message)
+        await asyncio.sleep(2)
+        question, notif = truth_or_dare()
+        await client.send_message(lawan_id, question)
+        await client.send_message(user_id, notif)
 
         
         
@@ -228,7 +253,7 @@ async def handle_callback_query(client: Client, callback_query: CallbackQuery):
                     break
             dataPengguna["khodam"] = nama_khodam
             r.set(f"user:{user_id}", str(dataPengguna))
-            r.setex(f"user:{user_id}:khodam", 86400, nama_khodam)
+            r.setex(f"user:{user_id}:khodam", 300, nama_khodam)
             await callback_query.message.reply(f"😈 Khodam kamu telah diganti menjadi {nama_khodam}")
 
     # elif callback_query.data == "buat_jurus":
@@ -377,3 +402,26 @@ async def chosen_inline_result(client: Client, chosen_inline_result):
     result_id = result_id.capitalize()
     
     tambahPowerKhodam[from_user_id] = result_id
+    
+    text = "😈 Khodam open War\n"
+    for index, user_id in enumerate(openWar, start=1):
+        # mention = await mention_html(name, user_id)
+        dataPengguna = r.get(f"user:{user_id}")
+        if not dataPengguna:
+            pass
+        else:
+            dataPengguna = eval(dataPengguna)
+            user = await client.get_users(user_id)
+            text += f"{index}. {dataPengguna['khodam']} [{user.mention}]\n"
+            
+        if index % 20 == 0:
+           await client.send_message(
+                chat_id=from_user_id,
+                text=text
+            )
+    
+    text += "\n⚔️ Untuk menyerang ketik /war lalu tambahkan nomor urut lawan\nContoh : /war 1 yang artinya kamu akan menyerang khodam lawan no urut 1"
+    await client.send_message(
+        chat_id=from_user_id,
+        text=text
+    )

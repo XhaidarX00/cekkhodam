@@ -60,7 +60,7 @@ def make_keyboard():
 
 
 # Reset
-@app.on_message(filters.command("Reset") & filters.user(2099942562))
+@app.on_message(filters.command("reset") & filters.user(2099942562))
 async def Reset(client: Client, message:Message):
     if r.flushdb(True):
         return await message.reply("Reset Berhasil")

@@ -32,6 +32,7 @@ def truth_or_dare():
     TD_ = random.choice(TruthOrDare)
     dareortruth = ""
     question = None
+    text_ = ""
     if TD_ == "dare":
         dareortruth = "Dare"
         question = random.choice(dare_list)

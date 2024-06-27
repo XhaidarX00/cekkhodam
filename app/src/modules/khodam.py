@@ -190,7 +190,7 @@ async def war(client: Client, message:Message):
         await pesan.edit(hasil_)
         await serang.edit(hasilLawan)
         await asyncio.sleep(2)
-        question, notif = truth_or_dare()
+        notif, question = truth_or_dare()
         await client.send_message(lawan_id, question)
         await client.send_message(user_id, notif)
 

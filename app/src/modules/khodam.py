@@ -66,6 +66,7 @@ async def show_ranking():
     list_ = {}
     for user_id in rank_list:
         value = r.get(f"{user_id}_point")
+        value = byte_to_string(value)
         list_[user_id] = value
     
     text = "😈 Ranking Khodam : \n"

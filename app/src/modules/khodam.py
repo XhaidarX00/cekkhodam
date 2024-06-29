@@ -1,3 +1,4 @@
+import os
 import random
 import json
 import asyncio
@@ -44,14 +45,51 @@ def truth_or_dare(hasil):
     
     return (text__, text_) if hasil == "Menang" else (text_, text__)
     
+
+rank_list = []
+
+def urutTerbesar(ranking_list):
+    # Mengurutkan kamus berdasarkan nilai (value) dari yang terbesar ke yang terkecil
+    sorted_ranking = dict(sorted(ranking_list.items(), key=lambda item: item[1], reverse=True))
     
+    return sorted_ranking
+
+
+async def show_ranking():
+    try:
+        if not r.get("ranklist"):
+            return "😈 Rank Khodam Kosong!"
+    except:
+        return "😈 Rank Khodam Kosong!"
     
+    rank_list = r.get("ranklist")
+    list_ = {}
+    for user_id in rank_list:
+        value = r.get(f"{user_id}_point")
+        list_[user_id] = value
+    
+    text = "😈 Ranking Khodam : \n"
+    list_urut = urutTerbesar(list_)
+    for index, (user_id, value) in enumerate(list_urut.items(), start = 1):
+        user = await bot.get_users(user_id)
+        mention = user.mention
+        text += f"{index}. {mention}\n"
+    
+    return text
+    
+
+async def tambah_point(user_id):
+    key = f"{user_id}_point"
+    if r.get(key):
+        r.incr(key)
+    else:
+        r.set(key, 1)
 
 
 # Fungsi untuk membuat tombol keyboard
 def make_keyboard():
     keyboard = [
-        [InlineKeyboardButton("🔥 Show Arena 🔥", callback_data="show_arena")],
+        [InlineKeyboardButton("🔥 Show Arena", callback_data="show_arena"), InlineKeyboardButton("Show Rank 🔥", callback_data="show_rank")],
         [InlineKeyboardButton("👾 Cek Khodam 👾", callback_data="cek_khodam")],
         [InlineKeyboardButton("👹 Ganti Jurus", callback_data="ganti_jurus"), InlineKeyboardButton("Ganti Khodam 👹", callback_data="ganti_khodam")],
         # [InlineKeyboardButton("Buat Jurus", callback_data="buat_jurus"), InlineKeyboardButton("Ganti Jurus", callback_data="ganti_jurus")],
@@ -164,16 +202,21 @@ async def war(client: Client, message:Message):
             text_tarung_lawan = f"😭 Wah Khodam mu Melemah Terkena {jurus}an Kematian!!"
             hasil_ = f"💪 Kamu {hasil} lawan {khodamLawan} dengan jurus {jurus}an adalan 🎉🎉!!"
             hasilLawan = f"😭 Kamu Kalah karena di{jurus} sama {khodam}, Cepat Ganti Jurus dan coba lagi!!"
+            await tambah_point(user_id)
+        
         elif hasil == "Kalah":
             text_tarung_lawan = f"😈 Wah Khodam mu Mengeluarkan {jurus}an Kematian!!"
             text_tarung = f"😭 Wah Khodam mu Melemah Terkena {jurusLawan}an Kematian!!"
             hasil_ = f"😭 Kamu {hasil} karena di{jurusLawan} {khodam}, Cepat Ganti Jurus dan coba lagi!!"
             hasilLawan = f"💪 Kamu Menang lawan {khodam} dengan jurus {jurus}an adalan 🎉🎉!!"
+            await tambah_point(lawan_id)
+        
         elif hasil == "Seri":
             text_tarung_lawan = f"😈 Wah Khodam mu Masih Bertahan!!"
             text_tarung = f"😈 Wah Khodam mu Masih Bertahan!!"
             hasil_ = f"🐲 Wah {hasil} {khodam} dan {khodamLawan} sama-sama kuat 💪!!"
             hasilLawan = f"🐲 Wah {hasil} {khodam} dan {khodamLawan} sama-sama kuat 💪!!"
+        
         else:
             text_error = "Terjadi Kesalahan Segera Lapor ke @kenapatagdar"
             await pesan.edit(text_error)
@@ -278,7 +321,11 @@ async def handle_callback_query(client: Client, callback_query: CallbackQuery):
             dataPengguna["jurus"] = jurus
             r.set(f"user:{user_id}", str(dataPengguna))
             await callback_query.message.reply(f"👹 Jurus kamu telah diganti menjadi {jurus}an")
-
+    
+    elif callback_query.data == "show_rank":
+        text = await show_ranking()
+        await callback_query.message.reply(text) 
+        
     elif callback_query.data == "show_arena":
         if len(openWar) == 0:
             return await callback_query.message.reply("🙈 Saat ini Ngga ada yang Open War Bree!")

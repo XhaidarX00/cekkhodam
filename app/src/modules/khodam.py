@@ -79,10 +79,10 @@ async def show_ranking():
     return text
     
 
-def byte_to_string(value):
+def byte_to_string(value_str):
     try:
         # Mengubah byte ke string
-        value_str = value.decode('utf-8')
+        value_str = value_str.decode('utf-8')
     except:
         pass
 

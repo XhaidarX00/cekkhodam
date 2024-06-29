@@ -81,10 +81,9 @@ async def show_ranking():
 async def tambah_point(user_id):
     try:
         key = f"{user_id}_point"
-        value = r.get(key)
-        if value:
+        if r.get(key):
             r.incr(key)
-            return value
+            return r.get(key)
         else:
             r.set(key, 1)
             return 1

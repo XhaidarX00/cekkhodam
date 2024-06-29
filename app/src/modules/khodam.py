@@ -98,7 +98,7 @@ async def tambah_point(user_id):
         list_rank = r.get("ranklist")
         list_rank = eval(list_rank)
         list_rank.append(user_id)
-        r.set("ranklist", list_rank)
+        r.set("ranklist", str(list_rank))
         
     try:
         key = f"{user_id}_point"

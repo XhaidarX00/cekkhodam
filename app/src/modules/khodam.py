@@ -42,7 +42,7 @@ def truth_or_dare(hasil):
     text_ = f"{dareortruth} untuk kamu!!\n🤷 : {question}"
     text__ = f"Lawan Kamu dapet {dareortruth}\n🤷 : {question}"
     
-    return text__, text_ if hasil == "Menang" else text_, text__
+    return (text__, text_) if hasil == "Menang" else (text_, text__)
     
     
     

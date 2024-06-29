@@ -1,4 +1,4 @@
-import os
+import re
 import random
 import json
 import asyncio
@@ -78,6 +78,19 @@ async def show_ranking():
     return text
     
 
+def byte_to_string(value):
+    
+    # Mengubah byte ke string
+    value_str = value.decode('utf-8')
+
+    # Menggunakan regex untuk mengambil angka saja
+    numbers = re.findall(r'\d+', value_str)
+
+    # Menggabungkan angka yang ditemukan (jika ada lebih dari satu) menjadi satu string
+    result = ''.join(numbers)
+    
+    return int(result)
+
 async def tambah_point(user_id):
     if not r.get("ranklist"):
         r.set("ranklist", str([user_id]))
@@ -85,13 +98,14 @@ async def tambah_point(user_id):
         list_rank = r.get("ranklist")
         list_rank = eval(list_rank)
         list_rank.append(user_id)
-        r.set(list_rank)
+        r.set("ranklist", list_rank)
         
     try:
         key = f"{user_id}_point"
         if r.get(key):
             r.incr(key)
-            return r.get(key)
+            value = byte_to_string(r.get(key))
+            return value
         else:
             r.set(key, 1)
             return 1

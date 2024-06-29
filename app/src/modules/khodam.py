@@ -79,11 +79,17 @@ async def show_ranking():
     
 
 async def tambah_point(user_id):
-    key = f"{user_id}_point"
-    if r.get(key):
-        r.incr(key)
-    else:
-        r.set(key, 1)
+    try:
+        key = f"{user_id}_point"
+        value = r.get(key)
+        if value:
+            r.incr(key)
+            return value
+        else:
+            r.set(key, 1)
+            return 1
+    except:
+        return None
 
 
 # Fungsi untuk membuat tombol keyboard
@@ -202,14 +208,18 @@ async def war(client: Client, message:Message):
             text_tarung_lawan = f"😭 Wah Khodam mu Melemah Terkena {jurus}an Kematian!!"
             hasil_ = f"💪 Kamu {hasil} lawan {khodamLawan} dengan jurus {jurus}an adalan 🎉🎉!!"
             hasilLawan = f"😭 Kamu Kalah karena di{jurus} sama {khodam}, Cepat Ganti Jurus dan coba lagi!!"
-            await tambah_point(user_id)
+            Point = await tambah_point(user_id)
+            if Point:
+                hasil_ += f"\n📝 Score Kamu : {Point}"
         
         elif hasil == "Kalah":
             text_tarung_lawan = f"😈 Wah Khodam mu Mengeluarkan {jurus}an Kematian!!"
             text_tarung = f"😭 Wah Khodam mu Melemah Terkena {jurusLawan}an Kematian!!"
             hasil_ = f"😭 Kamu {hasil} karena di{jurusLawan} {khodam}, Cepat Ganti Jurus dan coba lagi!!"
             hasilLawan = f"💪 Kamu Menang lawan {khodam} dengan jurus {jurus}an adalan 🎉🎉!!"
-            await tambah_point(lawan_id)
+            Point = await tambah_point(lawan_id)
+            if Point:
+                hasilLawan += f"\n📝 Score Kamu : {Point}"
         
         elif hasil == "Seri":
             text_tarung_lawan = f"😈 Wah Khodam mu Masih Bertahan!!"

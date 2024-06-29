@@ -87,7 +87,7 @@ def byte_to_string(value_str):
         pass
 
     # Menggunakan regex untuk mengambil angka saja
-    numbers = re.findall(r'\d+', value_str)
+    numbers = re.findall(r'\d+', str(value_str))
 
     # Menggabungkan angka yang ditemukan (jika ada lebih dari satu) menjadi satu string
     result = ''.join(numbers)

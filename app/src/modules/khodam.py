@@ -156,7 +156,7 @@ async def war(client: Client, message:Message):
         text_tarung_lawan = ""
         hasilLawan = ""
         text_tarung = f"⚔️ {khodamLawan} VS {khodam} ⚔️\n\nSEDANG BERTARUNGG !!!"
-        pesan = await message.reply(text_tarung)
+        pesan = await client.send_message(user_id, text_tarung)
         serang = await client.send_message(lawan_id, text_tarung)
         await asyncio.sleep(4)
         if hasil == "Menang":

@@ -80,9 +80,11 @@ async def show_ranking():
     
 
 def byte_to_string(value):
-    
-    # Mengubah byte ke string
-    value_str = value.decode('utf-8')
+    try:
+        # Mengubah byte ke string
+        value_str = value.decode('utf-8')
+    except:
+        pass
 
     # Menggunakan regex untuk mengambil angka saja
     numbers = re.findall(r'\d+', value_str)

@@ -79,6 +79,14 @@ async def show_ranking():
     
 
 async def tambah_point(user_id):
+    if not r.get("ranklist"):
+        r.set([user_id])
+    else:
+        list_rank = r.get("ranklist")
+        list_rank = eval(list_rank)
+        list_rank.append(user_id)
+        r.set(list_rank)
+        
     try:
         key = f"{user_id}_point"
         if r.get(key):

@@ -75,7 +75,7 @@ async def show_ranking():
     for index, (user_id, value) in enumerate(list_urut.items(), start = 1):
         user = await bot.get_users(user_id)
         mention = user.mention
-        text += f"{index}. {mention}\n"
+        text += f"{index}. {mention} {value} Point\n"
     
     return text
     

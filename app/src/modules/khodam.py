@@ -28,11 +28,10 @@ with open(path, "r") as file:
 
 TruthOrDare = ["truth", "dare"]
 
-def truth_or_dare():
+def truth_or_dare(hasil):
     TD_ = random.choice(TruthOrDare)
     dareortruth = ""
     question = None
-    text_ = ""
     if TD_ == "dare":
         dareortruth = "Dare"
         question = random.choice(dare_list)
@@ -40,9 +39,10 @@ def truth_or_dare():
         dareortruth = "Truth"
         question = random.choice(truth_list)
         
-    text_ += f"{dareortruth} untuk kamu!!\n🤷 : {question}"
+    text_ = f"{dareortruth} untuk kamu!!\n🤷 : {question}"
     text__ = f"Lawan Kamu dapet {dareortruth}\n🤷 : {question}"
-    return text__, text_
+    
+    return text__, text_ if hasil == "Menang" else text_, text__
     
     
     
@@ -191,7 +191,7 @@ async def war(client: Client, message:Message):
         await serang.edit(hasilLawan)
         await asyncio.sleep(2)
         if hasil != "Seri":
-            notif, question = truth_or_dare()
+            notif, question = truth_or_dare(hasil)
             await client.send_message(lawan_id, question)
             await client.send_message(user_id, notif)
 

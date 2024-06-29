@@ -80,7 +80,7 @@ async def show_ranking():
 
 async def tambah_point(user_id):
     if not r.get("ranklist"):
-        r.set("ranklist", [user_id])
+        r.set("ranklist", str([user_id]))
     else:
         list_rank = r.get("ranklist")
         list_rank = eval(list_rank)

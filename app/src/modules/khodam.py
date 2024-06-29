@@ -63,6 +63,7 @@ async def show_ranking():
         return "😈 Rank Khodam Kosong!"
     
     rank_list = r.get("ranklist")
+    rank_list = eval(rank_list)
     list_ = {}
     for user_id in rank_list:
         value = r.get(f"{user_id}_point")
@@ -80,14 +81,11 @@ async def show_ranking():
     
 
 def byte_to_string(value_str):
-    try:
-        # Mengubah byte ke string
-        value_str = value_str.decode('utf-8')
-    except:
-        pass
+    # Mengubah byte ke string
+    value_str = value_str.decode('utf-8')
 
     # Menggunakan regex untuk mengambil angka saja
-    numbers = re.findall(r'\d+', str(value_str))
+    numbers = re.findall(r'\d+', value_str)
 
     # Menggabungkan angka yang ditemukan (jika ada lebih dari satu) menjadi satu string
     result = ''.join(numbers)

@@ -356,16 +356,13 @@ async def handle_callback_query(client: Client, callback_query: CallbackQuery):
     #     await callback_query.message.reply(f"👹 Jurus yang kamu buat adalah {jurus}an")
 
     elif callback_query.data == "ganti_jurus":
-        if "jurus" not in dataPengguna:
-            return await callback_query.message.reply("🙈 Kamu belum membuat jurus, tekan tombol buat jurus untuk memulai")
-        else:
-            while True:
-                jurus = random.choice(data_jurus)
-                if jurus != dataPengguna["jurus"]:
-                    break
-            dataPengguna["jurus"] = jurus
-            r.set(f"user:{user_id}", str(dataPengguna))
-            await callback_query.message.reply(f"👹 Jurus kamu telah diganti menjadi {jurus}an")
+        while True:
+            jurus = random.choice(data_jurus)
+            if jurus != dataPengguna["jurus"]:
+                break
+        dataPengguna["jurus"] = jurus
+        r.set(f"user:{user_id}", str(dataPengguna))
+        await callback_query.message.reply(f"👹 Jurus kamu telah diganti menjadi {jurus}")
     
     elif callback_query.data == "show_rank":
         text = await show_ranking()

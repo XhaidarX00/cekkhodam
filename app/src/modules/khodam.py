@@ -196,7 +196,7 @@ async def war(client: Client, message:Message):
         try:
             lawan_id = openWar[opsi - 1]
         except:
-            return message.reply("🐲 Lawan Sudah Menutup war!!")
+            return await message.reply("🐲 Lawan Sudah Menutup war!!")
         
         if int(lawan_id) == user_id:
             return await message.reply(f"🚫 Kamu tidak bisa menyerang diri sendiri {message.from_user.mention}")

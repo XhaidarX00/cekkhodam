@@ -29,20 +29,23 @@ with open(path, "r") as file:
 
 TruthOrDare = ["truth", "dare"]
 
-def truth_or_dare(hasil):
-    TD_ = random.choice(TruthOrDare)
-    dareortruth = ""
+async def truth_or_dare(hasil, menang, kalah):
+    # TD_ = random.choice(TruthOrDare)
+    # TD_ = random.choice("truth")
+    # dareortruth = ""
     # question = None
     dareortruth = "Truth"
-    if TD_ == "dare":
-        # dareortruth = "Dare"
-        question = random.choice(dare_list)
-    else:
+    # if TD_ == "dare":
+    #     # dareortruth = "Dare"
+    #     question = random.choice(dare_list)
+    # else:
         # dareortruth = "Truth"
-        question = random.choice(truth_list)
     
-    text_ = f"{dareortruth} untuk kamu!!\n🤷 : {question}"
-    text__ = f"Lawan Kamu dapet {dareortruth}\n🤷 : {question}"
+    user_M = await bot.get_users(menang)
+    user_K = await bot.get_users(kalah)
+    question = random.choice(truth_list)
+    text_ = f"{dareortruth} untuk {user_M.mention} !!\n🤷 : {question}"
+    text__ = f"{user_K.mention} dapet {dareortruth}\n🤷 : {question}"
     
     return (text__, text_) if hasil == "Menang" else (text_, text__)
     
@@ -216,16 +219,23 @@ async def war(client: Client, message:Message):
         
         # lawan = random.choice(khodam_list)
         # hasil = random.choice(Hasil_Tarung)
+        
+        user_ = await bot.get_users(user_id)
+        user_L = await bot.get_users(lawan_id)
+        
         tambahPower = tambahPowerKhodam[user_id] if user_id in tambahPowerKhodam else ""
         tambahPowerLawan = tambahPowerKhodam[lawan_id] if lawan_id in tambahPowerKhodam else ""
         
         hasil = await KertasGuntingBatu(tambahPower, tambahPowerLawan)
         text_tarung_lawan = ""
         hasilLawan = ""
-        text_tarung = f"⚔️ {khodamLawan} VS {khodam} ⚔️\n\nSEDANG BERTARUNGG !!!"
+        text_tarung = f"⚔️ {khodam} [{user_.mention}] VS {khodamLawan} [{user_L.mention}] ⚔️\n\nSEDANG BERTARUNGG !!!"
         pesan = await client.send_message(user_id, text_tarung)
         serang = await client.send_message(lawan_id, text_tarung)
         await asyncio.sleep(4)
+        isMenang = None
+        isKalah = None
+        
         if hasil == "Menang":
             text_tarung = f"😈 Wah Khodam mu Mengeluarkan {jurus}an Kematian!!"
             text_tarung_lawan = f"😭 Wah Khodam mu Melemah Terkena {jurus}an Kematian!!"
@@ -234,15 +244,19 @@ async def war(client: Client, message:Message):
             Point = await tambah_point(user_id)
             if Point:
                 hasil_ += f"\n📝 Score Kamu : {Point}"
+            isMenang = user_id
+            isKalah = lawan_id
         
         elif hasil == "Kalah":
             text_tarung_lawan = f"😈 Wah Khodam mu Mengeluarkan {jurus}an Kematian!!"
             text_tarung = f"😭 Wah Khodam mu Melemah Terkena {jurusLawan}an Kematian!!"
             hasil_ = f"😭 Kamu {hasil} karena di{jurusLawan} {khodamLawan}, Cepat Ganti Jurus dan coba lagi!!"
-            hasilLawan = f"💪 Kamu Menang lawan {khodam} dengan jurus {jurus}an adalan 🎉🎉!!"
+            hasilLawan = f"💪 Kamu Menang lawan {khodam} dengan jurus {jurusLawan}an adalan 🎉🎉!!"
             Point = await tambah_point(lawan_id)
             if Point:
                 hasilLawan += f"\n📝 Score Kamu : {Point}"
+            isMenang = lawan_id
+            isKalah = user_id
         
         elif hasil == "Seri":
             text_tarung_lawan = f"😈 Wah Khodam mu Masih Bertahan!!"
@@ -267,7 +281,7 @@ async def war(client: Client, message:Message):
         await serang.edit(hasilLawan)
         await asyncio.sleep(2)
         if hasil != "Seri":
-            notif, question = truth_or_dare(hasil)
+            notif, question = truth_or_dare(hasil, isMenang, isKalah)
             await client.send_message(lawan_id, question)
             await client.send_message(user_id, notif)
 

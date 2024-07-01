@@ -236,7 +236,7 @@ async def war(client: Client, message:Message):
         if hasil == "Menang":
             text_tarung = f"😈 Wah Khodam mu Mengeluarkan {jurus}an Kematian!!"
             text_tarung_lawan = f"😭 Wah Khodam mu Melemah Terkena {jurus}an Kematian!!"
-            hasil_ = f"💪 Kamu {hasil} lawan {khodamLawan} dengan jurus {jurus}an adalan 🎉🎉!!"
+            hasil_ = f"💪 Kamu {hasil} lawan {khodamLawan} dengan jurus {jurus}an andalan 🎉🎉!!"
             hasilLawan = f"😭 Kamu Kalah karena di{jurus} sama {khodam}, Cepat Ganti Jurus dan coba lagi!!"
             Point = await tambah_point(user_id)
             if Point:
@@ -247,7 +247,7 @@ async def war(client: Client, message:Message):
             text_tarung_lawan = f"😈 Wah Khodam mu Mengeluarkan {jurus}an Kematian!!"
             text_tarung = f"😭 Wah Khodam mu Melemah Terkena {jurusLawan}an Kematian!!"
             hasil_ = f"😭 Kamu {hasil} karena di{jurusLawan} {khodamLawan}, Cepat Ganti Jurus dan coba lagi!!"
-            hasilLawan = f"💪 Kamu Menang lawan {khodam} dengan jurus {jurusLawan}an adalan 🎉🎉!!"
+            hasilLawan = f"💪 Kamu Menang lawan {khodam} dengan jurus {jurusLawan}an andalan 🎉🎉!!"
             Point = await tambah_point(lawan_id)
             if Point:
                 hasilLawan += f"\n📝 Score Kamu : {Point}"

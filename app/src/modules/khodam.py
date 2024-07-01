@@ -32,14 +32,15 @@ TruthOrDare = ["truth", "dare"]
 def truth_or_dare(hasil):
     TD_ = random.choice(TruthOrDare)
     dareortruth = ""
-    question = None
+    # question = None
+    dareortruth = "Truth"
     if TD_ == "dare":
-        dareortruth = "Dare"
+        # dareortruth = "Dare"
         question = random.choice(dare_list)
     else:
-        dareortruth = "Truth"
+        # dareortruth = "Truth"
         question = random.choice(truth_list)
-        
+    
     text_ = f"{dareortruth} untuk kamu!!\n🤷 : {question}"
     text__ = f"Lawan Kamu dapet {dareortruth}\n🤷 : {question}"
     

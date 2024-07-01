@@ -29,7 +29,7 @@ with open(path, "r") as file:
 
 TruthOrDare = ["truth", "dare"]
 
-async def truth_or_dare(hasil, menang, kalah):
+def truth_or_dare(hasil, isMenang, isKalah):
     # TD_ = random.choice(TruthOrDare)
     # TD_ = random.choice("truth")
     # dareortruth = ""
@@ -41,11 +41,9 @@ async def truth_or_dare(hasil, menang, kalah):
     # else:
         # dareortruth = "Truth"
     
-    user_M = await bot.get_users(menang)
-    user_K = await bot.get_users(kalah)
     question = random.choice(truth_list)
-    text_ = f"{dareortruth} untuk {user_M.mention} !!\n🤷 : {question}"
-    text__ = f"{user_K.mention} dapet {dareortruth}\n🤷 : {question}"
+    text_ = f"{dareortruth} untuk {isMenang} !!\n🤷 : {question}"
+    text__ = f"{isKalah} dapet {dareortruth}\n🤷 : {question}"
     
     return (text__, text_) if hasil == "Menang" else (text_, text__)
     
@@ -244,8 +242,8 @@ async def war(client: Client, message:Message):
             Point = await tambah_point(user_id)
             if Point:
                 hasil_ += f"\n📝 Score Kamu : {Point}"
-            isMenang = user_id
-            isKalah = lawan_id
+            isMenang = user_.mention
+            isKalah = user_L.mention
         
         elif hasil == "Kalah":
             text_tarung_lawan = f"😈 Wah Khodam mu Mengeluarkan {jurus}an Kematian!!"
@@ -255,8 +253,8 @@ async def war(client: Client, message:Message):
             Point = await tambah_point(lawan_id)
             if Point:
                 hasilLawan += f"\n📝 Score Kamu : {Point}"
-            isMenang = lawan_id
-            isKalah = user_id
+            isMenang = user_L.mention
+            isKalah = user_.mention
         
         elif hasil == "Seri":
             text_tarung_lawan = f"😈 Wah Khodam mu Masih Bertahan!!"

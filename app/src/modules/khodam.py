@@ -29,7 +29,7 @@ with open(path, "r") as file:
 
 TruthOrDare = ["truth", "dare"]
 
-def truth_or_dare(hasil, isMenang, isKalah):
+def truth_or_dare(hasil, isKalah):
     # TD_ = random.choice(TruthOrDare)
     # TD_ = random.choice("truth")
     # dareortruth = ""
@@ -42,7 +42,7 @@ def truth_or_dare(hasil, isMenang, isKalah):
         # dareortruth = "Truth"
     
     question = random.choice(truth_list)
-    text_ = f"{dareortruth} untuk {isMenang} !!\n🤷 : {question}"
+    text_ = f"{dareortruth} untuk {isKalah} !!\n🤷 : {question}"
     text__ = f"{isKalah} dapet {dareortruth}\n🤷 : {question}"
     
     return (text__, text_) if hasil == "Menang" else (text_, text__)
@@ -231,7 +231,6 @@ async def war(client: Client, message:Message):
         pesan = await client.send_message(user_id, text_tarung)
         serang = await client.send_message(lawan_id, text_tarung)
         await asyncio.sleep(4)
-        isMenang = None
         isKalah = None
         
         if hasil == "Menang":
@@ -242,7 +241,6 @@ async def war(client: Client, message:Message):
             Point = await tambah_point(user_id)
             if Point:
                 hasil_ += f"\n📝 Score Kamu : {Point}"
-            isMenang = user_.mention
             isKalah = user_L.mention
         
         elif hasil == "Kalah":
@@ -253,7 +251,6 @@ async def war(client: Client, message:Message):
             Point = await tambah_point(lawan_id)
             if Point:
                 hasilLawan += f"\n📝 Score Kamu : {Point}"
-            isMenang = user_L.mention
             isKalah = user_.mention
         
         elif hasil == "Seri":
@@ -279,7 +276,7 @@ async def war(client: Client, message:Message):
         await serang.edit(hasilLawan)
         await asyncio.sleep(2)
         if hasil != "Seri":
-            notif, question = truth_or_dare(hasil, isMenang, isKalah)
+            notif, question = truth_or_dare(hasil, isKalah)
             await client.send_message(lawan_id, question)
             await client.send_message(user_id, notif)
 

@@ -355,8 +355,11 @@ async def handle_callback_query(client: Client, callback_query: CallbackQuery):
     elif callback_query.data == "ganti_jurus":
         while True:
             jurus = random.choice(data_jurus)
-            if jurus != dataPengguna["jurus"]:
-                break
+            try:
+                if jurus != dataPengguna["jurus"]:
+                    break
+            except:
+                pass
         dataPengguna["jurus"] = jurus
         r.set(f"user:{user_id}", str(dataPengguna))
         await callback_query.message.reply(f"👹 Jurus kamu telah diganti menjadi {jurus}")

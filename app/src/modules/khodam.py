@@ -470,7 +470,7 @@ async def inline_query(client: Client, inline_query: InlineQuery):
             InlineQueryResultCachedSticker(
                 id=str(i),
                 sticker_file_id=sticker,
-                input_message_content=InputTextMessageContent(message_text=text_templates[i])
+                # input_message_content=InputTextMessageContent(message_text=text_templates[i])
             ) for i, sticker in enumerate(stickers)
         ]
 

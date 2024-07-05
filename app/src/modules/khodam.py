@@ -486,11 +486,11 @@ async def chosen_inline_result(client: Client, chosen_inline_result):
     result_id = chosen_inline_result.result_id
     from_user_id = chosen_inline_result.from_user.id
     
-    if result_id == 0:
+    if result_id == "0":
         result_id = "Batu"
-    elif result_id == 1:
+    elif result_id == "1":
         result_id = "Kertas"
-    elif result_id == 2:
+    elif result_id == "2":
         result_id = "Gunting"
     else:
         return await client.send_message(

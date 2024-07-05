@@ -4,7 +4,7 @@ import json
 import asyncio
 from pyrogram import Client, filters
 from pyrogram.types import Message, CallbackQuery, InlineQuery
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, InlineQueryResultArticle, InputTextMessageContent
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, InlineQueryResultArticle, InputTextMessageContent, InlineQueryResultCachedSticker
 from app import bot, OWNER_ID, REDISURL
 from app.src.helpers.parser import mention_html
 
@@ -78,6 +78,8 @@ async def show_ranking():
         user = await bot.get_users(user_id)
         mention = user.mention
         text += f"{index}. {mention} {value} Point\n"
+        if index == 10:
+            break
     
     return text
     
@@ -178,12 +180,42 @@ async def KertasGuntingBatu(power, powerLawan):
     return result
 
 
+
+# Display Show Rank
+async def showOpenWar(user_id):
+    text = "😈 Khodam open War\n"
+    for index, user_id in enumerate(openWar, start=1):
+        # mention = await mention_html(name, user_id)
+        dataPengguna = r.get(f"user:{user_id}")
+        if not dataPengguna:
+            pass
+        else:
+            dataPengguna = eval(dataPengguna)
+            user = await app.get_users(user_id)
+            text += f"{index}. {dataPengguna['khodam']} [{user.mention}]\n"
+            
+        if index % 20 == 0:
+           await app.send_message(
+                chat_id=user_id,
+                text=text
+            )
+    
+    text += "\n⚔️ Untuk menyerang ketik /war lalu tambahkan nomor urut lawan\nContoh : /war 1 yang artinya kamu akan menyerang khodam lawan no urut 1"
+    await app.send_message(
+        chat_id=user_id,
+        text=text
+    )
+
+
+
+
+
 # Perang
 @app.on_message(filters.command("war"))
 async def war(client: Client, message:Message):
     global tambahPowerKhodam
     if len(openWar) == 0:
-        return await message.reply("🙈 Saat ini Ngga ada yang Open War Bree!")
+        return await message.reply("🙈 Saat ini Ngga ada yang Open War Bree!\nKetik /gaskeun kemudian open war!")
         
     user_id = message.from_user.id
     opsi = message.text.split(None, 1)[1] if len(message.text.split()) == 2 else ""
@@ -191,6 +223,7 @@ async def war(client: Client, message:Message):
         opsi = int(opsi)
     except ValueError:
         await message.reply("**🐲 Gunakan Format :** /war no urut dalam angka!!")
+        return await showOpenWar(user_id)
     
     if opsi:
         try:
@@ -332,7 +365,8 @@ async def handle_callback_query(client: Client, callback_query: CallbackQuery):
             ttl = r.ttl(f"user:{user_id}:khodam")
             hours, remainder = divmod(ttl, 3600)
             minutes, _ = divmod(remainder, 60)
-            await callback_query.message.reply(f"🙈 Belum bisa ganti khodam, sisa waktu {hours} Jam {minutes} Menit")
+            # await callback_query.message.reply(f"🙈 Belum bisa ganti khodam, sisa waktu {hours} Jam {minutes} Menit")
+            await callback_query.message.reply(f"🙈 Belum bisa ganti khodam, sisa waktu {minutes} Menit")
         else:
             while True:
                 nama_khodam = random.choice(khodam_list)
@@ -373,29 +407,13 @@ async def handle_callback_query(client: Client, callback_query: CallbackQuery):
             return await callback_query.message.reply("🙈 Saat ini Ngga ada yang Open War Bree!")
         
         if "khodam" not in dataPengguna or "jurus" not in dataPengguna:
-            await callback_query.message.reply("🙈 Kamu harus membuat khodam dan atau jurus terlebih dahulu")
+            await callback_query.message.reply("🙈 Kamu harus membuat khodam terlebih dahulu!!")
         else:
-            text = "😈 Khodam open War\n"
-            for index, user_id in enumerate(openWar, start=1):
-                # mention = await mention_html(name, user_id)
-                dataPengguna = r.get(f"user:{user_id}")
-                if not dataPengguna:
-                    pass
-                else:
-                    dataPengguna = eval(dataPengguna)
-                    user = await client.get_users(user_id)
-                    text += f"{index}. {dataPengguna['khodam']} [{user.mention}]\n"
-                    
-                if index % 20 == 0:
-                    await callback_query.message.reply(text)
-            
-            text += "\n⚔️ Untuk menyerang ketik /war lalu tambahkan nomor urut lawan\nContoh : /war 1 yang artinya kamu akan menyerang khodam lawan no urut 1"
-            await callback_query.message.reply(text)
-            # await callback_query.message.reply(f"Khodam: {dataPengguna['khodam']}\nJurus: {dataPengguna['jurus']}")
+            await showOpenWar(user_id)
 
     elif callback_query.data == "open_war":
         if "khodam" not in dataPengguna or "jurus" not in dataPengguna:
-            await callback_query.message.reply("Kamu harus membuat khodam dan jurus terlebih dahulu")
+            await callback_query.message.reply("🙈 Kamu harus membuat khodam terlebih dahulu!!")
         else:
             keyboard = InlineKeyboardMarkup([
                 [InlineKeyboardButton("Tambah Power", switch_inline_query_current_chat="")]
@@ -411,10 +429,6 @@ async def handle_callback_query(client: Client, callback_query: CallbackQuery):
             text += "\nKlik tombol untuk menambah Power Khodam 🔥🔥"
             return await callback_query.message.reply(text, reply_markup=keyboard)
             
-            # lawan = random.choice(khodam_list)
-            # hasil = random.choice(Hasil_Tarung)
-            # await callback_query.message.reply(f"Khodam kamu: {dataPengguna['khodam']}\nJurus kamu: {dataPengguna['jurus']}\n\nLawan: {lawan}\n\nHasil Tarung: {hasil}")
-
     elif callback_query.data == "tutup_war":
         if user_id not in openWar:
             return await callback_query.message.reply("🙈 Kamu belum Open War Gimana mau ditutup?")
@@ -440,21 +454,29 @@ async def inline_query(client: Client, inline_query: InlineQuery):
     if user_id not in openWar:
         return await client.send_message(user_id, "🙈 Kamu belum Open War, Klik Open War untuk Memulai!!")
     else:
-        emojis = [
-            ("Gunting", "✌️"),  # Peace hand sign
-            ("Batu", "✊"),  # Raised fist
-            ("Kertas", "✋")   # Raised hand
+        stickers = [
+            "CAACAgUAAxkBAAMlZodcDctovUUe9RmmQ2iQI2MdSMsAAroRAAKmczlUsrG8cYYIn_QeBA",  # Batu
+            "CAACAgUAAxkBAAMjZodcC-40HxXprEuQ6Fr74yahUSMAArkQAAJEKUFU87c8xh2rf8keBA",  # Kertas
+            "CAACAgUAAxkBAAMhZodcCpFp5_YTmpeIfqxBb7n-tF0AAjENAAIrIkBU_5irPBWD7DEeBA",  # Gunting
+        ]
+
+        text_templates = [
+            "Kamu memilih Batu untuk bantu **Power Khodam**",
+            "Kamu memilih Kertas untuk bantu **Power Khodam**",
+            "Kamu memilih Gunting untuk bantu **Power Khodam**"
         ]
 
         results = [
-            InlineQueryResultArticle(
-                id=i,
-                title=i,
-                input_message_content=InputTextMessageContent(message_text=emoji)
-            ) for i, emoji in emojis
+            InlineQueryResultCachedSticker(
+                id=str(i),
+                sticker_file_id=sticker,
+                input_message_content=InputTextMessageContent(message_text=text_templates[i])
+            ) for i, sticker in enumerate(stickers)
         ]
 
-        await client.answer_inline_query(inline_query.id, results)
+        return await client.answer_inline_query(inline_query.id, results)
+
+
 
 # Handler untuk chosen inline result
 @app.on_chosen_inline_result()
@@ -464,55 +486,37 @@ async def chosen_inline_result(client: Client, chosen_inline_result):
     result_id = chosen_inline_result.result_id
     from_user_id = chosen_inline_result.from_user.id
     
-    # if result_id == "Gunting":
-    #     result_id = "Gunting"
-    # elif result_id =="Batu":
-    #     result_id = "Batu"
-    # elif result_id == "Kertas":
-    #     result_id = "Kertas"
-    # else:
-    #     return 
-    
-    if result_id not in gamePower:
+    if result_id == 0:
+        result_id = "Batu"
+    elif result_id == 1:
+        result_id = "Kertas"
+    elif result_id == 2:
+        result_id = "Gunting"
+    else:
         return await client.send_message(
-        chat_id=from_user_id,
-        text=f"{result_id} Tidak ada di list Game Power"
-    )
+            chat_id=from_user_id,
+            text=f"🙈 Pilihan invalid !!"
+        ) 
     
-    # Mengirim pesan ke pengguna
-    await client.send_message(
-        chat_id=from_user_id,
-        text=f"Kamu memilih {result_id} untuk bantu **Power Khodam**"
-    )
+    # if result_id not in gamePower:
+    #     return await client.send_message(
+    #     chat_id=from_user_id,
+    #     text=f"{result_id} Tidak ada di list Game Power"
+    # )
+    
+    # # Mengirim pesan ke pengguna
+    # await client.send_message(
+    #     chat_id=from_user_id,
+    #     text=f"Kamu memilih {result_id} untuk bantu **Power Khodam**"
+    # )
     
     await client.send_message(
         chat_id=OWNER_ID,
         text=f"{chosen_inline_result.from_user.mention} {result_id}"
     )
     
-    result_id = result_id.capitalize()
+    # result_id = result_id.capitalize()
     
     tambahPowerKhodam[from_user_id] = result_id
     
-    text = "😈 Khodam open War\n"
-    for index, user_id in enumerate(openWar, start=1):
-        # mention = await mention_html(name, user_id)
-        dataPengguna = r.get(f"user:{user_id}")
-        if not dataPengguna:
-            pass
-        else:
-            dataPengguna = eval(dataPengguna)
-            user = await client.get_users(user_id)
-            text += f"{index}. {dataPengguna['khodam']} [{user.mention}]\n"
-            
-        if index % 20 == 0:
-           await client.send_message(
-                chat_id=from_user_id,
-                text=text
-            )
-    
-    text += "\n⚔️ Untuk menyerang ketik /war lalu tambahkan nomor urut lawan\nContoh : /war 1 yang artinya kamu akan menyerang khodam lawan no urut 1"
-    await client.send_message(
-        chat_id=from_user_id,
-        text=text
-    )
+    await showOpenWar(from_user_id)

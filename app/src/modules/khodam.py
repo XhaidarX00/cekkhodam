@@ -495,7 +495,7 @@ async def chosen_inline_result(client: Client, chosen_inline_result):
     else:
         return await client.send_message(
             chat_id=from_user_id,
-            text=f"🙈 Pilihan invalid !!"
+            text=f"🙈 Pilihan {result_id} invalid !!"
         ) 
     
     # if result_id not in gamePower:

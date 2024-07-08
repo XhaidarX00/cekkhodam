@@ -353,7 +353,7 @@ async def handle_callback_query(client: Client, callback_query: CallbackQuery):
         else:
             nama_khodam = random.choice(khodam_list)
             dataPengguna["khodam"] = nama_khodam
-            dataPengguna["durasiGantiKhodam"] = True
+            dataPengguna["durasiGantiKhodam"] = nama_khodam
             r.set(f"user:{user_id}", str(dataPengguna))
             # r.setex(f"user:{user_id}:khodam", 86400, nama_khodam)
             r.setex(f"user:{user_id}:durasiGantiKhodam", 300, nama_khodam)

@@ -355,20 +355,11 @@ async def handle_callback_query(client: Client, callback_query: CallbackQuery):
             dataPengguna["khodam"] = nama_khodam
             r.set(f"user:{user_id}", str(dataPengguna))
             # r.setex(f"user:{user_id}:khodam", 86400, nama_khodam)
-            r.setex(f"user:{user_id}:khodam", 300, nama_khodam)
+            r.setex(f"user:{user_id}:durasiGantiKhodam", 300, nama_khodam)
             await callback_query.message.reply(f"😈 Khodam kamu adalah **{nama_khodam}**")
 
     elif callback_query.data == "ganti_khodam":
-        if "khodam" not in dataPengguna:
-            await callback_query.message.reply("🙈 Kamu belum membuat khodam, tekan tombol cek khodam untuk memulai")
-        elif f"user:{user_id}:khodam" in r:
-            ttl = r.ttl(f"user:{user_id}:khodam")
-            hours, remainder = divmod(ttl, 3600)
-            minutes, _ = divmod(remainder, 60)
-            seconds, _ = divmod(minutes, 60)
-            # await callback_query.message.reply(f"🙈 Belum bisa ganti khodam, sisa waktu {hours} Jam {minutes} Menit")
-            await callback_query.message.reply(f"🙈 Belum bisa ganti khodam, sisa waktu {minutes} Menit {seconds} Detik")
-        else:
+        if "durasiGantiKhodam" not in dataPengguna:
             while True:
                 nama_khodam = random.choice(khodam_list)
                 if nama_khodam != dataPengguna["khodam"]:
@@ -377,6 +368,14 @@ async def handle_callback_query(client: Client, callback_query: CallbackQuery):
             r.set(f"user:{user_id}", str(dataPengguna))
             r.setex(f"user:{user_id}:khodam", 300, nama_khodam)
             await callback_query.message.reply(f"😈 Khodam kamu telah diganti menjadi {nama_khodam}")
+        
+        elif f"user:{user_id}:durasiGantiKhodam" in r:
+            ttl = r.ttl(f"user:{user_id}:durasiGantiKhodam")
+            hours, remainder = divmod(ttl, 3600)
+            minutes, seconds = divmod(remainder, 60)
+            # await callback_query.message.reply(f"🙈 Belum bisa ganti khodam, sisa waktu {hours} Jam {minutes} Menit")
+            await callback_query.message.reply(f"🙈 Belum bisa ganti khodam, sisa waktu {minutes} Menit {seconds} Detik")
+            
 
     # elif callback_query.data == "buat_jurus":
     #     if "jurus" not in dataPengguna:

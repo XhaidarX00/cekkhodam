@@ -365,8 +365,9 @@ async def handle_callback_query(client: Client, callback_query: CallbackQuery):
             ttl = r.ttl(f"user:{user_id}:khodam")
             hours, remainder = divmod(ttl, 3600)
             minutes, _ = divmod(remainder, 60)
+            seconds, _ = divmod(minutes, 60)
             # await callback_query.message.reply(f"🙈 Belum bisa ganti khodam, sisa waktu {hours} Jam {minutes} Menit")
-            await callback_query.message.reply(f"🙈 Belum bisa ganti khodam, sisa waktu {minutes} Menit")
+            await callback_query.message.reply(f"🙈 Belum bisa ganti khodam, sisa waktu {minutes} Menit {seconds} Detik")
         else:
             while True:
                 nama_khodam = random.choice(khodam_list)
@@ -399,8 +400,28 @@ async def handle_callback_query(client: Client, callback_query: CallbackQuery):
         await callback_query.message.reply(f"👹 Jurus kamu telah diganti menjadi {jurus}")
     
     elif callback_query.data == "show_rank":
-        text = await show_ranking()
-        await callback_query.message.reply(text) 
+         text = "😈 Khodam open War\n"
+         for index, user_id in enumerate(openWar, start=1):
+            # mention = await mention_html(name, user_id)
+            dataPengguna = r.get(f"user:{user_id}")
+            if not dataPengguna:
+                pass
+            else:
+                dataPengguna = eval(dataPengguna)
+                user = await app.get_users(user_id)
+                text += f"{index}. {dataPengguna['khodam']} [{user.mention}]\n"
+                
+            if index % 20 == 0:
+                await app.send_message(
+                        chat_id=user_id,
+                        text=text
+                    )
+        
+            text += "\n⚔️ Untuk menyerang ketik /war lalu tambahkan nomor urut lawan\nContoh : /war 1 yang artinya kamu akan menyerang khodam lawan no urut 1"
+            await app.send_message(
+                chat_id=user_id,
+                text=text
+            )
         
     elif callback_query.data == "show_arena":
         if len(openWar) == 0:
@@ -409,7 +430,8 @@ async def handle_callback_query(client: Client, callback_query: CallbackQuery):
         if "khodam" not in dataPengguna or "jurus" not in dataPengguna:
             await callback_query.message.reply("🙈 Kamu harus membuat khodam terlebih dahulu!!")
         else:
-            await showOpenWar(user_id)
+            await callback_query.message.reply("Processing ...")
+            return await showOpenWar(callback_query.from_user.id)
 
     elif callback_query.data == "open_war":
         if "khodam" not in dataPengguna or "jurus" not in dataPengguna:
@@ -470,7 +492,7 @@ async def inline_query(client: Client, inline_query: InlineQuery):
             InlineQueryResultCachedSticker(
                 id=str(i),
                 sticker_file_id=sticker,
-                # input_message_content=InputTextMessageContent(message_text=text_templates[i])
+                input_message_content=InputTextMessageContent(message_text=text_templates[i]),
             ) for i, sticker in enumerate(stickers)
         ]
 
